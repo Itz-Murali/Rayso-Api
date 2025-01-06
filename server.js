@@ -1,6 +1,10 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import RaySo from 'rayso-api';
+import RaySo, {
+  CardTheme,
+  CardPadding,
+  CardProgrammingLanguage,
+} from 'rayso-api';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -8,12 +12,12 @@ const PORT = process.env.PORT || 3000;
 app.use(bodyParser.json());
 
 const raySo = new RaySo({
-  title: "Murali",
-  theme: "candy",
+  title: "Your Code",
+  theme: CardTheme.CANDY,
   background: true,
   darkMode: true,
-  padding: 32,
-  language: "auto",
+  padding: CardPadding.md,
+  language: CardProgrammingLanguage.JS,
 });
 
 app.post('/generate', async (req, res) => {
@@ -22,11 +26,11 @@ app.post('/generate', async (req, res) => {
   try {
     raySo.updateConfig({
       title: title || "Untitled-1",
-      theme: theme || "candy",
+      theme: theme || CardTheme.CANDY,
       background: background !== undefined ? background : true,
       darkMode: darkMode !== undefined ? darkMode : true,
-      padding: padding || 32,
-      language: language || "auto",
+      padding: padding || CardPadding.md,
+      language: language || CardProgrammingLanguage.AUTO,
     });
 
     const imageBuffer = await raySo.cook(code);
@@ -38,20 +42,10 @@ app.post('/generate', async (req, res) => {
 });
 
 app.post('/themes', (req, res) => {
-  const themes = [
-    "breeze",
-    "candy",
-    "crimson",
-    "falcon",
-    "meadow",
-    "midnight",
-    "raindrop",
-    "sunset",
-  ];
+  const themes = Object.values(CardTheme);
   res.json({ themes });
 });
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
