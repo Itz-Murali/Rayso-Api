@@ -11,20 +11,12 @@ const PORT = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 
-const raySo = new RaySo({
-  title: "Your Code",
-  theme: CardTheme.CANDY,
-  background: true,
-  darkMode: true,
-  padding: CardPadding.md,
-  language: CardProgrammingLanguage.JS,
-});
-
 app.post('/generate', async (req, res) => {
   const { code, title, theme, background, darkMode, padding, language } = req.body;
 
   try {
-    raySo.updateConfig({
+    // Create a new RaySo instance with the provided configuration
+    const raySo = new RaySo({
       title: title || "Untitled-1",
       theme: theme || CardTheme.CANDY,
       background: background !== undefined ? background : true,
@@ -33,6 +25,7 @@ app.post('/generate', async (req, res) => {
       language: language || CardProgrammingLanguage.AUTO,
     });
 
+    // Generate the image buffer
     const imageBuffer = await raySo.cook(code);
     res.setHeader('Content-Type', 'image/png');
     res.send(imageBuffer);
