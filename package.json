@@ -1,0 +1,15 @@
+{
+  "name": "rayso-api-server",
+  "version": "1.0.0",
+  "description": "API server for generating Ray.so images.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "body-parser": "^1.20.2",
+    "rayso-api": "^1.1.0"
+  },
+  "type": "module"
+}
