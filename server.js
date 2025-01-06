@@ -1,10 +1,6 @@
 import express from "express";
 import bodyParser from "body-parser";
-import RaySo, {
-  CardTheme,
-  CardPadding,
-  CardProgrammingLanguage,
-} from "rayso-api";
+import RaySo from "rayso-api";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -12,7 +8,18 @@ const PORT = process.env.PORT || 3000;
 app.use(bodyParser.json());
 
 app.post("/generate", async (req, res) => {
-  const { code, title, theme, background, darkMode, padding, language } = req.body;
+  const {
+    code,
+    title = "Untitled-1",
+    theme = "breeze",
+    background = true,
+    darkMode = true,
+    padding = 32,
+    language = "auto",
+    localPreview = false,
+    localPreviewPath = "./",
+    debug = false,
+  } = req.body;
 
   if (!code || typeof code !== "string") {
     return res.status(400).json({ error: "Invalid or missing 'code' field." });
@@ -20,12 +27,15 @@ app.post("/generate", async (req, res) => {
 
   try {
     const raySo = new RaySo({
-      title: title || "Untitled-1",
-      theme: theme || CardTheme.CANDY,
-      background: background !== undefined ? background : true,
-      darkMode: darkMode !== undefined ? darkMode : true,
-      padding: padding || CardPadding.md,
-      language: language || CardProgrammingLanguage.AUTO,
+      title,
+      theme,
+      background,
+      darkMode,
+      padding,
+      language,
+      localPreview,
+      localPreviewPath,
+      debug,
     });
 
     const imageBuffer = await raySo.cook(code);
@@ -44,7 +54,7 @@ app.post("/generate", async (req, res) => {
 
 app.post("/themes", (req, res) => {
   try {
-    const themes = Object.values(CardTheme);
+    const themes = ["breeze", "candy", "crimson", "falcon", "meadow", "midnight", "raindrop", "sunset"];
     res.json({ themes });
   } catch (error) {
     console.error("Error fetching themes:", error.message || error);
