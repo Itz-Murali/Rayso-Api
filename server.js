@@ -37,13 +37,17 @@ app.post('/generate', async (req, res) => {
     res.setHeader('Content-Type', 'image/png');
     res.send(imageBuffer);
   } catch (error) {
-    res.status(500).json({ error: "Failed to generate image" });
+    res.status(500).json({ error: error.message || "Failed to generate image" });
   }
 });
 
 app.post('/themes', (req, res) => {
-  const themes = Object.values(CardTheme);
-  res.json({ themes });
+  try {
+    const themes = Object.values(CardTheme);
+    res.json({ themes });
+  } catch (error) {
+    res.status(500).json({ error: error.message || "Failed to fetch themes" });
+  }
 });
 
 app.listen(PORT, () => {
